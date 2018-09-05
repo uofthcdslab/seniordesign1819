@@ -102,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# annoying files from chromeos
+*~
+
+# generated data file
+logged-calls.csv
