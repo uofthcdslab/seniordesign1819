@@ -3,6 +3,7 @@
 import urllib3
 from bs4 import BeautifulSoup
 import pandas as pd
+from datetime import datetime
 
 # make a web service call to get html page
 http = urllib3.PoolManager()
@@ -43,5 +44,8 @@ for table_cell in table_cells:
         
 df = pd.DataFrame.from_dict(data)
 df.columns = ['Call_Number','Datetime','Location','Police_District','Nature_of_Call','Status']
+
+# get time data was uploaded for logging purposes
+df['Datetime_Created'] = datetime.now()
 
 df.to_csv('MKE_Dispatched_Calls', mode='a', header=False)
