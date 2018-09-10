@@ -1,5 +1,5 @@
 # A simple scaper to download that latest call page and go through each row of the table
-import urllib, os, sys
+import urllib, os, sys, datetime
 import pandas as pd
 from bs4 import BeautifulSoup as BS
 
@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup as BS
 nameAppend = ''
 if len(sys.argv) > 1:
     nameAppend = sys.argv[1]
+else:
+    nameAppend = datetime.datetime.now().strftime('%m-%d-%y')
 
 # download the page
 url = 'https://itmdapps.milwaukee.gov/MPDCallData/'
@@ -16,7 +18,7 @@ soup = BS(pageData, features='html.parser')
 table = soup.tbody
 
 # open pandas db
-dbFile = 'logged-calls' + nameAppend + '.csv'
+dbFile = 'logged-calls-' + nameAppend + '.csv'
 if not os.path.exists(dbFile):
     with open(dbFile, 'w+') as f:
         f.write('ID,Call Number,Date/Time,Location,Police District,Nature of Call,Status')
