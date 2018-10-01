@@ -5,10 +5,12 @@ from bs4 import BeautifulSoup as BS
 
 # get info for adding to file name
 nameAppend = ''
+nameYesterday = ''
 if len(sys.argv) > 1:
     nameAppend = sys.argv[1]
 else:
     nameAppend = datetime.datetime.now().strftime('%m-%d-%y')
+    nameYesterday = (datetime.datetime.now() - datetime.timedelta(1)).strftime('%m-%d-%y')
 
 # download the page
 url = 'https://itmdapps.milwaukee.gov/MPDCallData/'
@@ -23,6 +25,12 @@ if not os.path.exists(dbFile):
     with open(dbFile, 'w+') as f:
         f.write('ID,Call Number,Date/Time,Location,Police District,Nature of Call,Status')
 df = pd.read_csv(dbFile, header=0, index_col=0, parse_dates=['Date/Time'])
+
+yesterdayFile = 'logged-calls-' + nameYesterday + '.csv'
+if nameYesterday and os.path.exists(yesterdayFile):
+    yesterday = pd.read_csv(yesterdayFile, header=0, index_col=0, parse_dates=['Date/Time'])
+else:
+    yesterday = df
 
 # loop through each row
 for row in table.find_all('tr'):
@@ -39,10 +47,8 @@ for row in table.find_all('tr'):
     rowId = str(callNum) + '-' + status
 
     # add to record
-    if rowId not in df.index:
+    if rowId not in df.index and rowId not in yesterday.index:
         df.loc[rowId] = [callNum, time, loc, dist, nature, status]
-    else:
-        existingData = df.loc[rowId]
 
 print(df)
 
