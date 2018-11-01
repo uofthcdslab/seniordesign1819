@@ -1,0 +1,4 @@
+,ID,Call Number,Date/Time,Location,Police District,Nature of Call,Status,Cleaned_Location,Coordinates,Error_Logging
+0,182603076-Service in Progress,182603076,2018-09-17 23:27:50,34/BURNHAM,2,INVESTIGATION,Service in Progress,"34&BURNHAM, MILWAUKEE","{'lat': 43.011264, 'lng': -87.958409}",
+1,182603075-Service in Progress,182603075,2018-09-17 23:26:04,"604 S 64TH ST,MKE",3,TAVERN CHECK,Service in Progress,"604 S 64TH ST,MILWAUKEE","{'lat': 43.025832, 'lng': -87.992007}",
+2,182603074-Assignment Completed,182603074,2018-09-17 23:25:59,"5600 W CAPITOL DR,MKE",7,RETURN STATION,Assignment Completed,"5600 W CAPITOL DR,MILWAUKEE","{'lat': 43.089303, 'lng': -88.052286}",
