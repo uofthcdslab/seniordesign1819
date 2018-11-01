@@ -1,0 +1,4 @@
+,ID,Call Number,Date/Time,Location,Police District,Nature of Call,Status,Cleaned_Location,Coordinates,Error_Logging
+0,182622842-Service in Progress,182622842,2018-09-19 23:28:33,"6929 W SILVER SPRING DR,MKE",4,OUT OF SERVICE,Service in Progress,"6929 W SILVER SPRING DR,MILWAUKEE","{'lat': 43.118893, 'lng': -87.998216}",
+1,182622830-Service in Progress,182622830,2018-09-19 23:26:21,"5057 N 62ND ST,MKE",7,SHOTS FIRED,Service in Progress,"5057 N 62ND ST,MILWAUKEE","{'lat': 43.109565, 'lng': -87.988968}",
+2,182622828-Unable to Locate Complainant,182622828,2018-09-19 23:25:33,"1626 S 7TH ST,MKE",2,MEET MFD,Unable to Locate Complainant,"1626 S 7TH ST,MILWAUKEE","{'lat': 43.01353, 'lng': -87.919349}",

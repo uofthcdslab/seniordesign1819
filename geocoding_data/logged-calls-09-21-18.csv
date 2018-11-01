@@ -1,0 +1,4 @@
+,ID,Call Number,Date/Time,Location,Police District,Nature of Call,Status,Cleaned_Location,Coordinates,Error_Logging
+0,182632825-Advised,182632825,2018-09-20 23:28:56,"2120 W CENTER ST,MKE",5,TRAFFIC STOP,Advised,"2120 W CENTER ST,MILWAUKEE","{'lat': 43.067964, 'lng': -87.938984}",
+1,182632823-Assignment Completed,182632823,2018-09-20 23:27:48,"2920 N 4TH ST,MKE",5,RETURN STATION,Assignment Completed,"2920 N 4TH ST,MILWAUKEE","{'lat': 43.071738, 'lng': -87.914995}",
+2,182632822-Service in Progress,182632822,2018-09-20 23:27:42,"813 S 31ST ST,MKE",2,FOLLOW UP,Service in Progress,"813 S 31ST ST,MILWAUKEE","{'lat': 43.022531, 'lng': -87.952854}",

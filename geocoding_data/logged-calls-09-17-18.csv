@@ -1,0 +1,4 @@
+,ID,Call Number,Date/Time,Location,Police District,Nature of Call,Status,Cleaned_Location,Coordinates,Error_Logging
+0,182592671-Service in Progress,182592671,2018-09-16 23:29:41,"2301 N LAKE DR,MKE",1,HOSPITAL GUARD,Service in Progress,"2301 N LAKE DR,MILWAUKEE","{'lat': 43.061285, 'lng': -87.880087}",
+1,182592668-Service in Progress,182592668,2018-09-16 23:29:22,"2725 S 12TH ST,MKE",2,SUBJ WITH GUN,Service in Progress,"2725 S 12TH ST,MILWAUKEE","{'lat': 42.994954, 'lng': -87.927671}",
+2,182592670-Advised,182592670,2018-09-16 23:29:10,"101 W CAPITOL DR,MKE",5,TRAFFIC STOP,Advised,"101 W CAPITOL DR,MILWAUKEE","{'lat': 43.088767, 'lng': -87.911077}",

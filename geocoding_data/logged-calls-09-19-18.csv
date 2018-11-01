@@ -1,0 +1,4 @@
+,ID,Call Number,Date/Time,Location,Police District,Nature of Call,Status,Cleaned_Location,Coordinates,Error_Logging
+0,182612756-Assignment Completed,182612756,2018-09-18 23:27:06,"2333 N 49TH ST,MKE",3,PROPERTY PICKUP,Assignment Completed,"2333 N 49TH ST,MILWAUKEE","{'lat': 43.061433, 'lng': -87.975516}",
+1,182612754-Advised,182612754,2018-09-18 23:26:35,"3022 W WISCONSIN AV,MKE",3,WELFARE CITIZEN,Advised,"3022 W WISCONSIN AV,MILWAUKEE","{'lat': 43.039563, 'lng': -87.952259}",
+2,182612753-Service in Progress,182612753,2018-09-18 23:26:32,"10130 W APPLETON AV,MKE",4,BUSINESS CHECK,Service in Progress,"10130 W APPLETAV,MILWAUKEE","{'lat': 43.011264, 'lng': -87.958409}",

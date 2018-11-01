@@ -1,0 +1,4 @@
+,ID,Call Number,Date/Time,Location,Police District,Nature of Call,Status,Cleaned_Location,Coordinates,Error_Logging
+0,182642821-Service in Progress,182642821,2018-09-21 23:29:26,"3908 N 60TH ST,MKE",7,BATTERY,Service in Progress,"3908 N 60TH ST,MILWAUKEE","{'lat': 43.088345, 'lng': -87.986455}",
+1,182642879-City Citation(s) Issued,182642879,2018-09-21 23:10:53,"3612 W BRANTING LA,MKE",2,PROPERTY DAMAGE,City Citation(s) Issued,"3612 W BRANTING LA,MILWAUKEE","{'lat': 43.01519, 'lng': -87.959054}",
+2,182642826-To be Filed,182642826,2018-09-21 22:40:01,"N 35TH ST / W HIGHLAND BL,MKE",3,ACC PDO,To be Filed,"N 35TH ST & W HIGHLAND BL,MILWAUKEE","{'lat': 43.044543, 'lng': -87.957672}",
