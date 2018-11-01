@@ -29,3 +29,5 @@ print()
 print(df[df['Status'] == 'False Alarm (Weather Related)'])
 
 pd.DataFrame(df['Nature of Call'].unique()).to_csv('natures.csv')
+addrDict = {'Location': df['Location'].unique(), 'Cleaned Location': '', 'Latitude': '', 'Longitude': ''}
+pd.DataFrame(addrDict).set_index(['Location']).to_csv('addresses.csv')
