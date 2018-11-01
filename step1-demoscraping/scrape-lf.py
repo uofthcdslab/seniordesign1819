@@ -15,6 +15,7 @@ else:
 # download the page
 url = 'https://itmdapps.milwaukee.gov/MPDCallData/'
 pageData = urllib.request.urlopen(url).read()
+
 # pull the table out of the page (ignoring headers)
 soup = BS(pageData, features='html.parser')
 table = soup.tbody
@@ -26,11 +27,19 @@ if not os.path.exists(dbFile):
         f.write('ID,Call Number,Date/Time,Location,Police District,Nature of Call,Status')
 df = pd.read_csv(dbFile, header=0, index_col=0, parse_dates=['Date/Time'])
 
+# open yesterday's db
 yesterdayFile = 'logged-calls-' + nameYesterday + '.csv'
 if nameYesterday and os.path.exists(yesterdayFile):
     yesterday = pd.read_csv(yesterdayFile, header=0, index_col=0, parse_dates=['Date/Time'])
 else:
     yesterday = df
+
+# open address db
+addrsFile = 'addresses.csv'
+if not os.path.exists(addrsFile):
+    with open(addrsFile, 'w+') as f:
+        f.write('Location,Cleaned Location,Latitude,Longitude')
+addrs = pd.read_csv(addrsFile, header=0, index_col=0)
 
 # loop through each row
 for row in table.find_all('tr'):
@@ -49,8 +58,10 @@ for row in table.find_all('tr'):
     # add to record
     if rowId not in df.index and rowId not in yesterday.index:
         df.loc[rowId] = [callNum, time, loc, dist, nature, status]
-
-print(df)
+        # record address if it is unique
+        if loc not in addrs.index:
+            addrs.loc[loc] = ['', '', '']
 
 # save record
 df.to_csv(dbFile)
+addrs.to_csv(addrsFile)
