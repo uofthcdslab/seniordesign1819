@@ -45,12 +45,10 @@ def clean_data(df):
         # catch error when our api key has run out of calls
         except:
             print('No calls remaining...')
-#### TODO: Check whether data is written to csv when we have run out of calls...
-            # save all processed addresses only
-            temp = temp.loc[temp['Cleaned_Location'] != '', :]
-            # last failed call will go in csv... we don't want that...
-            temp = temp.drop(df.tail(1).index,inplace=True)
-            break
+            # save all geocoded addresses
+            temp = temp.loc[0:i-1,:]
+            coordinate_df.to_csv('Coordinate_Dictionary.csv',index=False,mode='w')
+            return temp
         
         # check whether data exists (works perfectly fine, but can be improved)
         if len(geocoded_location['results']) > 0:
