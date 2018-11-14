@@ -7,7 +7,7 @@ Our team is made up of six undergraduate data science majors from Marquette Univ
 #Data
 We will be focusing on data found at https://itmdapps.milwaukee.gov/MPDCallData/
 
-This webpage contains a continually updating 60 minute window of 911 calls dispatched to Milwaukee Police department. We have compiled a dataset containing several months of data from this window, with new data pushed daily. Certain aspects of data cleaning, such as geocoding, have been automated as well.
+This webpage contains a continually updating 60 minute window of 911 calls dispatched to Milwaukee Police Department. We have compiled a dataset containing several months of data from this window, with new data pushed daily. Certain aspects of data cleaning, such as geocoding, have been automated as well.
 
 #Organization
-If you wish to observe our internal project management and breakdown, view our trell board [here] (https://trello.com/b/FUvuNRk1/semester-1). Here you will find our tasks, what stage they are in, and which team members are primarily working on them. We are practicing an [agile methodology](https://en.wikipedia.org/wiki/Agile_software_development), so the board updates regularly!
+If you wish to observe our internal project management and breakdown, view our trello board [here] (https://trello.com/b/FUvuNRk1/semester-1). Here you will find our tasks, what stage they are in, and which team members are primarily working on them. We are practicing an [agile methodology](https://en.wikipedia.org/wiki/Agile_software_development), so the board updates regularly!
