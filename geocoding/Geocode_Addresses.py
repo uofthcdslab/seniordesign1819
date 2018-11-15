@@ -4,121 +4,75 @@
 import pandas as pd
 from geocodio import GeocodioClient
 from Address_Dictionary import address_dictionary_1 #,address_dictionary_2
-from os import walk
-from pathlib import Path
+import numpy as np
 
 def clean_data(df):
     
-    # setup dataframe and geocodio client
+    # setup dataframe
     temp = df.copy()
-    client = GeocodioClient("b42752c85bb22c5b5e924be26276bb246257c25")
     
-    # add additional columns
-    temp['Cleaned_Location'] = temp['Location']
-    temp['Coordinates'] = ''
-    temp['Error_Logging'] = ''
-    
-    # retrieve all addresses previously geocoded
-    coordinate_df = pd.read_csv('Coordinate_Dictionary.csv')
+    # set up api keys to be used
+    api_keys = [
+        'b42752c85bb22c5b5e924be26276bb246257c25',
+        'bb553e0bbff5b333b8bb9555a93b976f55e3e35',
+        'e3b53edefba3e7a34673473470bf4a5e0fb765e',
+        '6589fabe9f95daba2a255e9eb21fe111a55959a'
+        ]
+    current_key = 0
+    client = GeocodioClient(api_keys[current_key])
+    print('using key:')
+    print(api_keys[current_key])
     
     for i, row in temp.iterrows():
-        
-        # use address dictionary for coordinates if location exists in address dictionary
-        location = temp.loc[i,'Location']
-        if location in coordinate_df['Location'].unique():
-            temp.loc[i,'Cleaned_Location'] = coordinate_df.loc[coordinate_df['Location'] == location, 'Cleaned_Location'].iloc[0]
-            temp.loc[i,'Coordinates'] = coordinate_df.loc[coordinate_df['Location'] == location,'Coordinates'].iloc[0]
+        # if data is already processed skip
+        if temp.loc[i,'Error'] == False or temp.loc[i,'Error'] == True:
             continue
         
+        # if the cleaned location is empty, set up the address to be cleaned
+        if np.isnan(temp.loc[i,'Cleaned_Location']) or temp.loc[i,'Cleaned_Location'] == '':
+            temp.loc[i,'Cleaned_Location'] = temp.loc[i,'Location']
+        
         # add milwaukee, WI to address if not already present
-        if 'MKE' in temp.loc[i,'Cleaned_Location']:
-            temp.loc[i,'Cleaned_Location'] = temp.loc[i,'Cleaned_Location'].replace('MKE',' MILWAUKEE, WI')
-        else:
-            temp.loc[i,'Cleaned_Location'] = temp.loc[i,'Cleaned_Location']+ ', MILWAUKEE, WI'
+        if 'MILWAUKEE, WI' not in temp.loc[i,'Cleaned_Location']:
+            if 'MKE' in temp.loc[i,'Cleaned_Location']:
+                temp.loc[i,'Cleaned_Location'] = temp.loc[i,'Cleaned_Location'].replace('MKE',' MILWAUKEE, WI')
+            else:
+                temp.loc[i,'Cleaned_Location'] = temp.loc[i,'Cleaned_Location']+ ', MILWAUKEE, WI'
 
         # clean addresses of common abbreviations and typos
         temp.loc[i,'Cleaned_Location'] = address_dictionary_1(temp.loc[i,'Cleaned_Location'])
-
-        # get and record coordinates of given address
-        try:
-            geocoded_location = client.geocode(temp.loc[i,'Cleaned_Location'])
-        # catch error when our api key has run out of calls
-        except:
-            print('No calls remaining...')
-            # save all geocoded addresses
-            temp = temp.loc[0:i-1,:]
-            coordinate_df.to_csv('Coordinate_Dictionary.csv',index=False,mode='w')
-            return temp
+        
+        # loop through api keys until a key works, otherwise save data
+        while len(api_keys) > current_key:
+            client = GeocodioClient(api_keys[current_key])
+            try:
+                # get and record coordinates of given address
+                geocoded_location = client.geocode(temp.loc[i,'Cleaned_Location'])
+                break
+            except:
+                print('using next key...')
+                current_key = current_key + 1
+        if len(api_keys) <= current_key:
+            print('no more keys remaining...')
+            return temp            
         
         # check whether data exists (works perfectly fine, but can be improved)
         if len(geocoded_location['results']) > 0:
+            coordinates = dict(geocoded_location['results'][0]['location'])
+            temp.loc[i,'Latitude'] = coordinates['lat']
+            temp.loc[i,'Longitude'] = coordinates['lng']
+            temp.loc[i,'Error'] = False
             
-            coordinates = str(geocoded_location['results'][0]['location'])
-            
-            # add new coordinates to coordinate dictionary
-            coordinate_entry = pd.DataFrame({'Location':[temp.loc[i,'Location']],
-                                             'Cleaned_Location':[temp.loc[i,'Cleaned_Location']],
-                                             'Coordinates':[coordinates]
-                                             })
-            coordinate_df = coordinate_df.append(coordinate_entry, ignore_index=True)
         # log errors
         else:            
-            coordinates = ''
-            temp.loc[i,'Error_Logging'] = str(geocoded_location)
-            error = pd.DataFrame({'location':[temp.loc[i,'Location']],
-                                  'cleaned_location':[temp.loc[i,'Cleaned_Location']],
-                                  'geocoding_result':[temp.loc[i,'Error_Logging']]})
-            error.to_csv('../geocoding_data/Error_Logging.csv', mode='a', header=False)
+            temp.loc[i,'Error'] = True
 
-        temp.loc[i,'Coordinates'] = coordinates
-        
-    coordinate_df.to_csv('Coordinate_Dictionary.csv',index=False,mode='w')
     return temp
 
 data_path = '../data/'
-geocoding_data_path = '../geocoding_data/'
+file_name = 'addresses.csv'
 
-f = []
-for (dir_path, dir_names, file_names) in walk(data_path):
-    f.extend(file_names)
-    break
-if 'readme.txt' in file_names:
-    file_names.remove('readme.txt')
-
-for file_name in file_names:
-    
-    data_df = pd.read_csv(data_path+file_name)
-    length_of_data_df = data_df.shape[0]
-    
-    file = Path(geocoding_data_path+file_name)
-    
-    # check whether a geocoding data file has already been generated
-    if file.is_file():
-        geocoding_data_df = pd.read_csv(geocoding_data_path+file_name)
-        length_of_geocoding_data_df = geocoding_data_df.shape[0]
-        remaining_instances = length_of_data_df - length_of_geocoding_data_df
-        
-        # geocoding file already exists and only some addresses have been converted to coordinates
-        if remaining_instances > 0:
-            result = clean_data(data_df.tail(remaining_instances))
-            result.to_csv(geocoding_data_path+file_name,mode='a',header=False)
-            
-        # geocoding file already exists and all addresses have been converted to coordinates
-        else:
-            print(file_name)
-            continue
-        
-    # geocoding file does not exist
-    else:
-        result = clean_data(data_df)
-        result.to_csv(geocoding_data_path+file_name)
-        
-    print(file_name)
-        
-    # if no calls are remaining, then break out of loop
-    geocoding_data_df = pd.read_csv(geocoding_data_path+file_name)
-    length_of_geocoding_data_df = geocoding_data_df.shape[0]
-    if length_of_data_df > length_of_geocoding_data_df:
-        break
-        
-
+data_df = pd.read_csv(data_path+file_name)
+result = clean_data(data_df)
+result.to_csv(data_path+file_name,index=False)
+print('done')
