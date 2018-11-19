@@ -69,7 +69,7 @@ def clean_data(df):
 
     return temp
 
-data_path = '../data/'
+data_path = ''
 file_name = 'addresses.csv'
 
 data_df = pd.read_csv(data_path+file_name)
