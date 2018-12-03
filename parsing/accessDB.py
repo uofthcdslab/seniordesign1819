@@ -3,13 +3,13 @@ import pandas as pd
 from datetime import datetime as dt
 
 # Read raw data in
-root = os.path.expanduser('data/')
+root = os.path.expanduser('../data/')
 
 files = [root + f for f in os.listdir(root) if f.endswith('.csv') and f != 'addresses.csv']
-dfs = [pd.read_csv(f, header=0, index_col=0, parse_dates=['Date/Time']) for f in files]
+dfs = [pd.read_csv(f, header=0, index_col='ID', parse_dates=['Date/Time']) for f in files]
 df = pd.concat(dfs)
 
-addrDB = pd.read_csv('data/addresses.csv', header=0, index_col=0)
+addrDB = pd.read_csv('../data/addresses.csv', header=0, index_col=0)
 
 # Function to get the date of a given address
 def geoLoc(addr):
