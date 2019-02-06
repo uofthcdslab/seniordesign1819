@@ -8,6 +8,7 @@ root = os.path.expanduser('../data/')
 files = [root + f for f in os.listdir(root) if f.endswith('.csv') and f != 'addresses.csv']
 dfs = [pd.read_csv(f, header=0, index_col='ID', parse_dates=['Date/Time']) for f in files]
 df = pd.concat(dfs)
+df['Police District'] = df['Police District'].astype(str)
 
 addrDB = pd.read_csv('../data/addresses.csv', header=0, index_col=0)
 
