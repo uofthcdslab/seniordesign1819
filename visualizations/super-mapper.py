@@ -78,6 +78,10 @@ inProj = Proj(init='EPSG:32054', preserve_units=True) # NAD27 Wisconsin South
 outProj = Proj(proj='latlong', datum='WGS84', ellps='WGS84') # Latitude and Longitude
 
 allCalls = db.filter(doGeoLoc=True)
+
+# remove duplicate calls
+allCalls = allCalls.drop_duplicates(subset='Call Number')
+
 # use top 25 calls
 natures = allCalls['Nature of Call'].value_counts()[:25].index
 
