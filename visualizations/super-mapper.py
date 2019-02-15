@@ -8,12 +8,16 @@ sys.path.append('../parsing')
 import accessDB as db
 import os
 
+plotDir = 'plots/'
+if not os.path.exists(plotDir):
+    os.mkdir(plotDir)
+
 # load in maps
-ald = shapefile.Reader('ald2016/alderman')
-nbh = shapefile.Reader('hoods/neighborhood')
-pol = shapefile.Reader('poldist/poldist')
-ward = shapefile.Reader('wards/ward')
-city = shapefile.Reader('corp/citylimit')
+ald = shapefile.Reader('../mapping/ald2016/alderman')
+nbh = shapefile.Reader('../mapping/hoods/neighborhood')
+pol = shapefile.Reader('../mapping/poldist/poldist')
+ward = shapefile.Reader('../mapping/wards/ward')
+city = shapefile.Reader('../mapping/corp/citylimit')
 
 def plotOn(sf, df, sfName, figName):
     # create a new dataframe with just the coordinates
@@ -65,7 +69,7 @@ def plotOn(sf, df, sfName, figName):
     m.plot(coords['Longitude'], coords['Latitude'], '.')
 
     #plt.show()
-    plt.savefig('plots/' + figName + '.png')
+    plt.savefig(plotDir + figName + '.png')
     plt.close()
     return polys
 
@@ -74,23 +78,33 @@ inProj = Proj(init='EPSG:32054', preserve_units=True) # NAD27 Wisconsin South
 outProj = Proj(proj='latlong', datum='WGS84', ellps='WGS84') # Latitude and Longitude
 
 allCalls = db.filter(doGeoLoc=True)
-natures = allCalls['Nature of Call'].unique()
+# use top 25 calls
+natures = allCalls['Nature of Call'].value_counts()[:25].index
 
 days = range(0, 7)
-weeks = range(36, 53)
+weeks = (allCalls['Date/Time'].dt.week.astype(str) + '-' + allCalls['Date/Time'].dt.year.astype(str)).unique()
+# for every nature
 for nature in natures:
     print('Running', nature)
+    figName = nature.replace('/', ' ')
+    # gather all calls
     df = allCalls[allCalls['Nature of Call'] == nature]
-    figName = nature.replace('/', ' ') + '-all'
-    if not os.path.isfile('plots/' + figName + '.png'):
-        plotOn(pol, df, 'Police District', figName)
+    
+    # plot all calls
+    allName = figName + '-all'
+    if not os.path.isfile('plots/' + allName + '.png'):
+        plotOn(pol, df, 'Police District', allName)
+        
+    # plot for every day of the week
     for dayOfWeek in days:
-        figName = nature.replace('/', ' ') + '-day' + str(dayOfWeek)
-        if not os.path.isfile('plots/' + figName + '.png'):
+        dayName = figName + '-day-' + str(dayOfWeek)
+        if not os.path.isfile('plots/' + dayName + '.png'):
             df_day = df[df['Date/Time'].dt.dayofweek == dayOfWeek]
-            plotOn(pol, df_day, 'Police District', figName)
+            plotOn(pol, df_day, 'Police District', dayName)
+            
+    # plot for every week
     for week in weeks:
-        figName = nature.replace('/', ' ') + '-week' + str(week)
-        if not os.path.isfile('plots/' + figName + '.png'):
-            df_week = df[df['Date/Time'].dt.week == week]
-            plotOn(pol, df_week, 'Police District', figName)
+        weekName = figName + '-week-' + str(week)
+        if not os.path.isfile('plots/' + weekName + '.png'):
+            df_week = df[(df['Date/Time'].dt.week.astype(str) + '-' + df['Date/Time'].dt.year.astype(str)) == week]
+            plotOn(pol, df_week, 'Police District', weekName)
