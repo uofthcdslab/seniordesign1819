@@ -1,16 +1,10 @@
 import shapefile
 from pyproj import Proj, transform
-import matplotlib.pyplot as plt
 import pandas as pd
 from shapely.geometry import Point, Polygon
 import sys
-sys.path.append('../parsing')
 import accessDB as db
 import os
-
-plotDir = 'plots/'
-if not os.path.exists(plotDir):
-    os.mkdir(plotDir)
 
 # load in maps
 ald = shapefile.Reader('../mapping/ald2016/alderman')
@@ -21,18 +15,17 @@ city = shapefile.Reader('../mapping/corp/citylimit')
 
 def getIn(sf, df, sfName):
     # create a new dataframe with just the coordinates
-    coords = df[['Latitude', 'Longitude']]
+    coords = df[['Latitude', 'Longitude', 'Nature of Call']]
     coords = coords.dropna()
     # some empty are missed I guess
     coords = coords[coords['Latitude'] != '']
     coords = coords[coords['Longitude'] != '']
 
     # loop through shapes
-    polys = []
     for i,shape in enumerate(sf.shapes()):
         points = []
 
-        # loop through points
+        # loop through points of shape
         for point in shape.points:
             # parse points
             coord = [float('%.3f' % coord) for coord in point]
@@ -42,7 +35,6 @@ def getIn(sf, df, sfName):
 
         # make a polygon out of the points
         poly = Polygon(points)
-        polys.append(poly)
 
         # find the district, ward, etc that a point is in
         for index, row in coords.iterrows():
@@ -59,15 +51,43 @@ outProj = Proj(proj='latlong', datum='WGS84', ellps='WGS84') # Latitude and Long
 allCalls = db.filter(doGeoLoc=True)
 
 # remove duplicate calls
-allCalls = allCalls.drop_duplicates(subset='Call Number')
+allCalls = allCalls.drop_duplicates(subset='Call Number')#[0:1000]
 
 # use top 25 calls
-natures = allCalls['Nature of Call'].value_counts()[:25].index
+natures = ['All'] + list(allCalls['Nature of Call'].value_counts()[:25].index
+)
+# get all regions
+coords = getIn(pol, allCalls, 'Region')
+counts = coords['Region'].value_counts()
 
+# make header of table
+columns = ['Nature'] + list(coords['Region'].unique()) + ['Total']
+print(columns)
+
+countTab = []
+
+i = 0
 # for every nature
 for nature in natures:
-    print('Running', nature)
     # gather all calls
-    df = allCalls[allCalls['Nature of Call'] == nature]
-    coords = getIn(pol, df, 'Police District')
-    print(coords.head)
+    if nature == 'All':
+        selection = coords
+    else:
+        selection = coords[coords['Nature of Call'] == nature]
+
+    # compute numbers for nature
+    counts = selection['Region'].value_counts()
+    countTab.append([nature] + ([0] * (len(columns)-1)))
+    for idx,count in counts.iteritems():
+        if idx in columns:
+            countTab[i][columns.index(idx)] = count
+    countTab[i][-1] = len(selection)
+
+    print(countTab[i])
+    i += 1
+
+# write table to file
+with open('nature-region-counts.csv', 'w') as f:
+    f.write(','.join(str(x) for x in columns) + '\n')
+    for row in countTab:
+        f.write(','.join(str(x) for x in row) + '\n')
