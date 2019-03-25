@@ -57,7 +57,7 @@ allCalls = allCalls.drop_duplicates(subset='Call Number')#[0:1000]
 natures = ['All'] + list(allCalls['Nature of Call'].value_counts()[:25].index
 )
 # get all regions
-coords = getIn(pol, allCalls, 'Region')
+coords = getIn(ald, allCalls, 'Region')
 counts = coords['Region'].value_counts()
 
 # make header of table
