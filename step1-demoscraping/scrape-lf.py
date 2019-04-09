@@ -38,7 +38,7 @@ else:
 addrsFile = 'addresses.csv'
 if not os.path.exists(addrsFile):
     with open(addrsFile, 'w+') as f:
-        f.write('Location,Cleaned Location,Latitude,Longitude')
+        f.write('Location,Cleaned Location,Latitude,Longitude,Error')
 addrs = pd.read_csv(addrsFile, header=0, index_col=0)
 
 # loop through each row
