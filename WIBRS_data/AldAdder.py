@@ -3,6 +3,7 @@ from pyproj import Proj, transform
 import pandas as pd
 from shapely.geometry import Point, Polygon
 import sys
+sys.path.insert(0, '../parsing')
 import accessDB as db
 import os
 
