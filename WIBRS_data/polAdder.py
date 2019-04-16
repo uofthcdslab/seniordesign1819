@@ -3,6 +3,7 @@ from pyproj import Proj, transform
 import pandas as pd
 from shapely.geometry import Point, Polygon
 import sys
+sys.path.insert(0, '../parsing')
 import accessDB as db
 import os
 
@@ -18,8 +19,8 @@ def getIn(sf, df, sfName):
     coords = df
     coords = coords.dropna()
     # some empty are missed I guess
-    coords = coords[coords['y_lat'] != '']
-    coords = coords[coords['x_long'] != '']
+    coords = coords[coords['y_lat'] != None]
+    coords = coords[coords['x_lng'] != None]
 
     # loop through shapes
     for i,shape in enumerate(sf.shapes()):
@@ -38,7 +39,7 @@ def getIn(sf, df, sfName):
 
         # find the district, ward, etc that a point is in
         for index, row in coords.iterrows():
-            point = Point(row['x_long'], row['y_lat'])
+            point = Point(row['x_lng'], row['y_lat'])
             if poly.contains(point):
                 coords.loc[index, sfName] = i
 
