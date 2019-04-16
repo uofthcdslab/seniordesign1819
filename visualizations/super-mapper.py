@@ -87,7 +87,7 @@ natures = allCalls['Nature of Call'].value_counts()[:25].index
 
 days = range(0, 7)
 hours = range(0, 24)
-weeks = (allCalls['Date/Time'].dt.week.astype(str) + '-' + allCalls['Date/Time'].dt.year.astype(str)).unique()
+weeks = (allCalls['Date/Time'].dt.year.astype(str) + '-' + allCalls['Date/Time'].dt.week.astype(str)).unique()
 # for every nature
 for nature in natures:
     print('Running', nature)
@@ -117,9 +117,7 @@ for nature in natures:
     # plot for every week
     for week in weeks:
         weekStr = str(week)
-        if len(weekStr) == 1:
-            weekStr = '0' + weekStr
         weekName = figName + '-week-' + weekStr
         if not os.path.isfile('plots/' + weekName + '.png'):
-            df_week = df[(df['Date/Time'].dt.week.astype(str) + '-' + df['Date/Time'].dt.year.astype(str)) == week]
+            df_week = df[(df['Date/Time'].dt.year.astype(str) + '-' + df['Date/Time'].dt.week.astype(str)) == week]
             plotOn(ald, df_week, 'Aldermanic District', weekName)
