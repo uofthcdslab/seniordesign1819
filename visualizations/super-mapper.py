@@ -86,7 +86,8 @@ allCalls = allCalls.drop_duplicates(subset='Call Number')
 natures = allCalls['Nature of Call'].value_counts()[:25].index
 
 days = range(0, 7)
-weeks = (allCalls['Date/Time'].dt.week.astype(str) + '-' + allCalls['Date/Time'].dt.year.astype(str)).unique()
+hours = range(0, 24)
+weeks = (allCalls['Date/Time'].dt.year.astype(str) + '-' + allCalls['Date/Time'].dt.week.astype(str)).unique()
 # for every nature
 for nature in natures:
     print('Running', nature)
@@ -97,18 +98,26 @@ for nature in natures:
     # plot all calls
     allName = figName + '-all'
     if not os.path.isfile('plots/' + allName + '.png'):
-        plotOn(pol, df, 'Police District', allName)
+        plotOn(ald, df, 'Aldermanic District', allName)
+            
+    # plot for every hour
+    for hour in hours:
+        hourName = figName + '-hour-' + str(hour)
+        if not os.path.isfile('plots/' + hourName + '.png'):
+            df_hour = df[df['Date/Time'].dt.hour == hour]
+            plotOn(ald, df_hour, 'Aldermanic District', hourName)
         
     # plot for every day of the week
     for dayOfWeek in days:
         dayName = figName + '-day-' + str(dayOfWeek)
         if not os.path.isfile('plots/' + dayName + '.png'):
             df_day = df[df['Date/Time'].dt.dayofweek == dayOfWeek]
-            plotOn(pol, df_day, 'Police District', dayName)
+            plotOn(ald, df_day, 'Aldermanic District', dayName)
             
     # plot for every week
     for week in weeks:
-        weekName = figName + '-week-' + str(week)
+        weekStr = str(week)
+        weekName = figName + '-week-' + weekStr
         if not os.path.isfile('plots/' + weekName + '.png'):
-            df_week = df[(df['Date/Time'].dt.week.astype(str) + '-' + df['Date/Time'].dt.year.astype(str)) == week]
-            plotOn(pol, df_week, 'Police District', weekName)
+            df_week = df[(df['Date/Time'].dt.year.astype(str) + '-' + df['Date/Time'].dt.week.astype(str)) == week]
+            plotOn(ald, df_week, 'Aldermanic District', weekName)
